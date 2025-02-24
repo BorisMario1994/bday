@@ -48,13 +48,18 @@
     <h1>Find the matching Photo</h1>
     <div class="game-container" id="gameBoard"></div>
     <div class="win-screen" id="winScreen"></div>
-    
+    <audio id="flipSound" src="flip.mp3"></audio>
+    <audio id="winSound" src="win.mp3"></audio>
+
     <script>
         const images = ["img1.jpg", "img2.jpg", "img3.jpg", "img4.jpg", "img5.jpg", "img6.jpg", "img7.jpg", "img8.jpg"];
         let tiles = [...images, ...images].sort(() => Math.random() - 0.5);
         let gameBoard = document.getElementById("gameBoard");
         let openedTiles = [];
         let matchedPairs = 0;
+
+         let flipSound = document.getElementById("flipSound");
+    let winSound = document.getElementById("winSound");
 
         tiles.forEach((img, index) => {
             let tile = document.createElement("div");
@@ -64,17 +69,6 @@
             gameBoard.appendChild(tile);
         });
 
-        function flipTile(tile) {
-    if (openedTiles.length < 2 && !tile.classList.contains("flipped") && !tile.classList.contains("hidden")) {
-        tile.style.backgroundImage = `url(${tile.dataset.image})`;
-        tile.classList.add("flipped");
-        openedTiles.push(tile);
-    }
-
-    if (openedTiles.length === 2) {
-        setTimeout(checkMatch, 500);
-    }
-}
 
 function flipTile(tile) {
     if (openedTiles.length < 2 && !tile.classList.contains("flipped") && !tile.classList.contains("hidden")) {
@@ -84,6 +78,9 @@ function flipTile(tile) {
 
         // Log the flipped tile's image
         console.log("Flipped Tile Image:", tile.dataset.image);
+         // Play flip sound
+            flipSound.currentTime = 0;  // Restart sound if played quickly
+            flipSound.play();
     }
 
     if (openedTiles.length === 2) {
@@ -108,6 +105,8 @@ function checkMatch() {
         if (matchedPairs === 8) {
             console.log("Game Complete! Showing Win Screen");
             document.getElementById("winScreen").style.display = "block";
+              // Play win sound
+                winSound.play();
         }
     } else {
         openedTiles.forEach(t => {
