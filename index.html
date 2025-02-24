@@ -197,17 +197,21 @@ document.addEventListener("DOMContentLoaded", () => {
         justify-content: center;
         margin: 0 auto;
     }
-    .tile {
-        width: 100px;
-        height: 100px;
-        background: gray;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        cursor: pointer;
-        border-radius: 10px;
-    }
+   .tile {
+    width: 100px;
+    height: 100px;
+    background: gray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    border-radius: 10px;
+    background-size: cover; /* Ensures the image fills the tile */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents repeating */
+}
+
     .hidden {
         visibility: hidden;
     }
