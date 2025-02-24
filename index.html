@@ -16,6 +16,7 @@
             gap: 10px;
             justify-content: center;
             margin: 20px auto;
+            width: 440px; /* Ensure the container has a width */
         }
         .card {
             width: 100px;
@@ -47,40 +48,82 @@
     <p id="message"></p>
 
     <script>
-        // Change the URLs to your GitHub repository if hosting images there
+        console.log("Script loaded successfully!");
+
+        // Change to direct image links if hosting images on GitHub
         const images = [
-            'https://raw.githubusercontent.com/BorisMario1994/bday/main/img1.jpg',
-            'https://raw.githubusercontent.com/BorisMario1994/bday/main/img2.jpg',
-            'https://raw.githubusercontent.com/BorisMario1994/bday/main/img3.jpg',
-            'https://raw.githubusercontent.com/BorisMario1994/bday/main/img4.jpg',
-            'https://raw.githubusercontent.com/BorisMario1994/bday/main/img5.jpg',
-            'https://raw.githubusercontent.com/BorisMario1994/bday/main/img6.jpg',
-            'https://raw.githubusercontent.com/BorisMario1994/bday/main/img7.jpg',
-            'https://raw.githubusercontent.com/BorisMario1994/bday/main/img8.jpg'
+            'img1.jpg', 'img2.jpg', 'img3.jpg', 'img4.jpg', 
+            'img5.jpg', 'img6.jpg', 'img7.jpg', 'img8.jpg'
         ];
 
         let cards = [...images, ...images]; // Duplicate images for matching pairs
         cards.sort(() => 0.5 - Math.random()); // Shuffle the cards
 
         const gameBoard = document.getElementById('gameBoard');
+
+        // Ensure gameBoard exists
+        if (!gameBoard) {
+            console.error("Game board not found!");
+        }
+
         let firstCard = null, secondCard = null;
         let lockBoard = false;
 
         // Create cards
-        cards.forEach((img) => {
+        cards.forEach((img, index) => {
             let card = document.createElement('div');
             card.classList.add('card');
             card.dataset.image = img;
             card.addEventListener('click', flipCard);
             gameBoard.appendChild(card);
 
-            // Debugging: Check if images load
-            const imgTest = new Image();
-            imgTest.src = img;
-            imgTest.onerror = () => console.error(`Image failed to load: ${img}`);
+            console.log(`Card ${index + 1} created with image: ${img}`);
         });
 
         function flipCard() {
             if (lockBoard || this.classList.contains('flipped') || this.classList.contains('matched')) return;
 
-           
+            let imagePath = this.dataset.image;
+            if (!imagePath) {
+                console.error("Image path not found for card!", this);
+                return;
+            }
+
+            this.style.backgroundImage = `url(${imagePath})`;
+            this.style.backgroundSize = "cover";
+            this.classList.add('flipped');
+
+            if (!firstCard) {
+                firstCard = this;
+            } else {
+                secondCard = this;
+                lockBoard = true;
+                setTimeout(checkMatch, 1000);
+            }
+        }
+
+        function checkMatch() {
+            if (firstCard.dataset.image === secondCard.dataset.image) {
+                firstCard.classList.add('matched');
+                secondCard.classList.add('matched');
+            } else {
+                setTimeout(() => {
+                    firstCard.style.backgroundImage = "url('heart.png')";
+                    secondCard.style.backgroundImage = "url('heart.png')";
+                    firstCard.classList.remove('flipped');
+                    secondCard.classList.remove('flipped');
+                }, 500);
+            }
+            firstCard = secondCard = null;
+            lockBoard = false;
+            checkWin();
+        }
+
+        function checkWin() {
+            if (document.querySelectorAll('.matched').length === cards.length) {
+                document.getElementById('message').innerText = "You did it! Happy Birthday, my love! ❤️";
+            }
+        }
+    </script>
+</body>
+</html>
