@@ -81,6 +81,9 @@ function flipTile(tile) {
         tile.style.backgroundImage = `url(${tile.dataset.image})`;
         tile.classList.add("flipped");
         openedTiles.push(tile);
+
+        // Log the flipped tile's image
+        console.log("Flipped Tile Image:", tile.dataset.image);
     }
 
     if (openedTiles.length === 2) {
@@ -91,13 +94,19 @@ function flipTile(tile) {
 function checkMatch() {
     if (openedTiles.length < 2) return; // Prevent running if there's not enough tiles
 
+    console.log("Checking Match:", openedTiles[0].dataset.image, "vs", openedTiles[1].dataset.image);
+
     if (openedTiles[0].dataset.image === openedTiles[1].dataset.image) {
         openedTiles.forEach(t => {
             t.classList.add("hidden");
             t.classList.remove("flipped");
         });
         matchedPairs++;
+
+        console.log("Matched Pairs:", matchedPairs);
+
         if (matchedPairs === 8) {
+            console.log("Game Complete! Showing Win Screen");
             document.getElementById("winScreen").style.display = "block";
         }
     } else {
@@ -111,6 +120,14 @@ function checkMatch() {
 
     openedTiles = []; // Reset for the next turn
 }
+
+// Log all tiles when the game starts
+document.addEventListener("DOMContentLoaded", () => {
+    let tiles = document.querySelectorAll(".tile");
+    console.log("All Tiles at Start:");
+    tiles.forEach(tile => console.log(tile.dataset.image));
+});
+
 
 
     
