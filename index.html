@@ -50,6 +50,8 @@
     <div class="win-screen" id="winScreen"></div>
     <audio id="flipSound" src="swipe.wav"></audio>
     <audio id="winSound" src="win.wav"></audio>
+    <!-- Canvas for Confetti Effect -->
+<canvas id="confettiCanvas"></canvas>
 
     <script>
         const images = ["img1.jpg", "img2.jpg", "img3.jpg", "img4.jpg", "img5.jpg", "img6.jpg", "img7.jpg", "img8.jpg"];
@@ -107,6 +109,8 @@ function checkMatch() {
             document.getElementById("winScreen").style.display = "block";
               // Play win sound
                 winSound.play();
+             // Trigger confetti effect 🎉
+                startConfetti();
         }
     } else {
         openedTiles.forEach(t => {
@@ -126,7 +130,48 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("All Tiles at Start:");
     tiles.forEach(tile => console.log(tile.dataset.image));
 });
+ // === CONFETTI EFFECT ===
+    function startConfetti() {
+        const canvas = document.getElementById("confettiCanvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
+        let particles = [];
+        let colors = ["#ff0", "#ff4500", "#00ff00", "#ff1493", "#1e90ff", "#ffa500"];
+
+        for (let i = 0; i < 150; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height - canvas.height,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                size: Math.random() * 10 + 5,
+                speed: Math.random() * 5 + 2,
+            });
+        }
+
+        function animateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach((p) => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+                p.y += p.speed;
+
+                if (p.y > canvas.height) {
+                    p.y = -10;
+                    p.x = Math.random() * canvas.width;
+                }
+            });
+
+            requestAnimationFrame(animateConfetti);
+        }
+
+        animateConfetti();
+        setTimeout(() => { canvas.style.display = "none"; }, 5000); // Stop after 5 seconds
+    }
 
 
     
