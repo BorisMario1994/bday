@@ -212,15 +212,25 @@ document.addEventListener("DOMContentLoaded", () => {
         visibility: hidden;
     }
     .win-screen {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url('full-image.jpg') center/cover no-repeat;
-        display: none;
-        z-index: 1;  /* Behind the confetti */
-    }
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    z-index: 1;  /* Behind the confetti */
+    background: black; /* Fallback background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.win-screen img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Ensures the full image is visible without cropping */
+}
+
     #confettiCanvas {
         position: fixed;
         top: 0;
