@@ -12,7 +12,7 @@
         }
         .game-container {
             display: grid;
-            grid-template-columns: repeat(3, 100px);
+            grid-template-columns: repeat(4, 100px);
             gap: 10px;
             justify-content: center;
             margin: 20px auto;
@@ -28,9 +28,11 @@
             font-size: 24px;
             cursor: pointer;
             border-radius: 10px;
-        }
-        .hidden {
             background-image: url('heart.png'); /* Placeholder */
+            background-size: cover;
+        }
+        .flipped {
+            background-color: white;
             background-size: cover;
         }
         .matched {
@@ -43,29 +45,31 @@
     <h1>Happy Birthday, Love! ❤️</h1>
     <div class="game-container" id="gameBoard"></div>
     <p id="message"></p>
-    
+
     <script>
-        const images = ['img1.jpg', 'img2.jpg', 'img3.jpg', 'img4.jpg', 'img5.jpg', 'img6.jpg'];
-        let cards = [...images, ...images];
-        cards.sort(() => 0.5 - Math.random());
+        const images = ['img1.jpg', 'img2.jpg', 'img3.jpg', 'img4.jpg', 'img5.jpg', 'img6.jpg', 'img7.jpg', 'img8.jpg'];
+        let cards = [...images, ...images]; // Duplicates images for pairs
+        cards.sort(() => 0.5 - Math.random()); // Shuffle the cards
 
         const gameBoard = document.getElementById('gameBoard');
         let firstCard = null, secondCard = null;
         let lockBoard = false;
 
-        cards.forEach((img, index) => {
+        // Create cards
+        cards.forEach((img) => {
             let card = document.createElement('div');
-            card.classList.add('card', 'hidden');
+            card.classList.add('card');
             card.dataset.image = img;
             card.addEventListener('click', flipCard);
             gameBoard.appendChild(card);
         });
 
         function flipCard() {
-            if (lockBoard || this.classList.contains('matched')) return;
+            if (lockBoard || this.classList.contains('flipped') || this.classList.contains('matched')) return;
+
             this.style.backgroundImage = `url(${this.dataset.image})`;
-            this.classList.remove('hidden');
-            
+            this.classList.add('flipped');
+
             if (!firstCard) {
                 firstCard = this;
             } else {
@@ -80,8 +84,8 @@
                 firstCard.classList.add('matched');
                 secondCard.classList.add('matched');
             } else {
-                firstCard.classList.add('hidden');
-                secondCard.classList.add('hidden');
+                firstCard.classList.remove('flipped');
+                secondCard.classList.remove('flipped');
                 firstCard.style.backgroundImage = "url('heart.png')";
                 secondCard.style.backgroundImage = "url('heart.png')";
             }
