@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Match Game</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: pink;
+        }
+        .game-container {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            gap: 10px;
+            justify-content: center;
+            margin: 20px auto;
+        }
+        .card {
+            width: 100px;
+            height: 100px;
+            background-color: white;
+            border: 2px solid red;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+        .hidden {
+            background-image: url('heart.png'); /* Placeholder */
+            background-size: cover;
+        }
+        .matched {
+            background-color: lightgreen;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Happy Birthday, Love! ❤️</h1>
+    <div class="game-container" id="gameBoard"></div>
+    <p id="message"></p>
+    
+    <script>
+        const images = ['img1.jpg', 'img2.jpg', 'img3.jpg', 'img4.jpg', 'img5.jpg', 'img6.jpg'];
+        let cards = [...images, ...images];
+        cards.sort(() => 0.5 - Math.random());
+
+        const gameBoard = document.getElementById('gameBoard');
+        let firstCard = null, secondCard = null;
+        let lockBoard = false;
+
+        cards.forEach((img, index) => {
+            let card = document.createElement('div');
+            card.classList.add('card', 'hidden');
+            card.dataset.image = img;
+            card.addEventListener('click', flipCard);
+            gameBoard.appendChild(card);
+        });
+
+        function flipCard() {
+            if (lockBoard || this.classList.contains('matched')) return;
+            this.style.backgroundImage = `url(${this.dataset.image})`;
+            this.classList.remove('hidden');
+            
+            if (!firstCard) {
+                firstCard = this;
+            } else {
+                secondCard = this;
+                lockBoard = true;
+                setTimeout(checkMatch, 1000);
+            }
+        }
+
+        function checkMatch() {
+            if (firstCard.dataset.image === secondCard.dataset.image) {
+                firstCard.classList.add('matched');
+                secondCard.classList.add('matched');
+            } else {
+                firstCard.classList.add('hidden');
+                secondCard.classList.add('hidden');
+                firstCard.style.backgroundImage = "url('heart.png')";
+                secondCard.style.backgroundImage = "url('heart.png')";
+            }
+            firstCard = secondCard = null;
+            lockBoard = false;
+            checkWin();
+        }
+
+        function checkWin() {
+            if (document.querySelectorAll('.matched').length === cards.length) {
+                document.getElementById('message').innerText = "You did it! Happy Birthday, my love! ❤️";
+            }
+        }
+    </script>
+</body>
+</html>
