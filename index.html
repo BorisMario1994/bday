@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Bday a</title>
+    <title>Happy Bday b</title>
     <style>
         body {
             text-align: center;
@@ -65,28 +65,39 @@
         });
 
         function flipTile(tile) {
-            if (openedTiles.length < 2 && !tile.classList.contains("hidden")) {
-                tile.style.backgroundImage = `url(${tile.dataset.image})`;
-                openedTiles.push(tile);
-            }
+    if (openedTiles.length < 2 && !tile.classList.contains("flipped") && !tile.classList.contains("hidden")) {
+        tile.style.backgroundImage = `url(${tile.dataset.image})`;
+        tile.classList.add("flipped");
+        openedTiles.push(tile);
+    }
 
-            if (openedTiles.length === 2) {
-                setTimeout(checkMatch, 500);
-            }
-        }
+    if (openedTiles.length === 2) {
+        setTimeout(checkMatch, 500);
+    }
+}
 
-      function checkMatch() {
-    if (openedTiles.length < 2) return; // Ensure we have two tiles before proceeding
+function checkMatch() {
+    if (openedTiles.length < 2) return; // Prevent running if there's not enough tiles
 
-    if (openedTiles[0]?.dataset.image === openedTiles[1]?.dataset.image) {
-        openedTiles.forEach(t => t.classList.add("hidden"));
+    if (openedTiles[0].dataset.image === openedTiles[1].dataset.image) {
+        openedTiles.forEach(t => {
+            t.classList.add("hidden");
+            t.classList.remove("flipped");
+        });
         matchedPairs++;
         if (matchedPairs === 8) {
             document.getElementById("winScreen").style.display = "block";
         }
     } else {
-        openedTiles.forEach(t => t.style.backgroundImage = "");
+        openedTiles.forEach(t => {
+            t.style.backgroundImage = "";
+            t.classList.remove("flipped");
+        });
     }
+
+    openedTiles = []; // Reset for the next turn
+}
+
     
     openedTiles = []; // Reset for the next turn
 }
