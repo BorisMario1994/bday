@@ -76,6 +76,18 @@
     }
 }
 
+function flipTile(tile) {
+    if (openedTiles.length < 2 && !tile.classList.contains("flipped") && !tile.classList.contains("hidden")) {
+        tile.style.backgroundImage = `url(${tile.dataset.image})`;
+        tile.classList.add("flipped");
+        openedTiles.push(tile);
+    }
+
+    if (openedTiles.length === 2) {
+        setTimeout(checkMatch, 500);
+    }
+}
+
 function checkMatch() {
     if (openedTiles.length < 2) return; // Prevent running if there's not enough tiles
 
@@ -90,13 +102,16 @@ function checkMatch() {
         }
     } else {
         openedTiles.forEach(t => {
-            t.style.backgroundImage = "";
             t.classList.remove("flipped");
+            setTimeout(() => {
+                t.style.backgroundImage = ""; // Delay hiding to avoid instant flicker
+            }, 300);
         });
     }
 
     openedTiles = []; // Reset for the next turn
 }
+
 
     
     </script>
