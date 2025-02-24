@@ -3,126 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memory Match Game</title>
+    <title>Happy Bday</title>
     <style>
         body {
             text-align: center;
             font-family: Arial, sans-serif;
-            background-color: pink;
+        }
+        h1 {
+            margin-bottom: 20px;
         }
         .game-container {
             display: grid;
             grid-template-columns: repeat(4, 100px);
-            gap: 10px;
+            grid-gap: 10px;
             justify-content: center;
-            margin: 20px auto;
-            width: 440px; /* Ensure the container has a width */
+            margin: 0 auto;
         }
-        .card {
+        .tile {
             width: 100px;
             height: 100px;
-            background-color: white;
-            border: 2px solid red;
+            background: gray;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
             cursor: pointer;
             border-radius: 10px;
-            background-image: url('heart.png'); /* Default back image */
-            background-size: cover;
         }
-        .flipped {
-            background-color: white;
-            background-size: cover;
+        .hidden {
+            visibility: hidden;
         }
-        .matched {
-            background-color: lightgreen;
-            pointer-events: none;
+        .win-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('full-image.jpg') center/cover no-repeat;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <h1>Happy Birthday, Love! ❤️</h1>
+    <h1>Happy Bday</h1>
     <div class="game-container" id="gameBoard"></div>
-    <p id="message"></p>
-
+    <div class="win-screen" id="winScreen"></div>
+    
     <script>
-        console.log("Script loaded successfully!");
+        const images = ["img1.jpg", "img2.jpg", "img3.jpg", "img4.jpg", "img5.jpg", "img6.jpg", "img7.jpg", "img8.jpg"];
+        let tiles = [...images, ...images].sort(() => Math.random() - 0.5);
+        let gameBoard = document.getElementById("gameBoard");
+        let openedTiles = [];
+        let matchedPairs = 0;
 
-        // Change to direct image links if hosting images on GitHub
-        const images = [
-            'img1.jpg', 'img2.jpg', 'img3.jpg', 'img4.jpg', 
-            'img5.jpg', 'img6.jpg', 'img7.jpg', 'img8.jpg'
-        ];
-
-        let cards = [...images, ...images]; // Duplicate images for matching pairs
-        cards.sort(() => 0.5 - Math.random()); // Shuffle the cards
-
-        const gameBoard = document.getElementById('gameBoard');
-
-        // Ensure gameBoard exists
-        if (!gameBoard) {
-            console.error("Game board not found!");
-        }
-
-        let firstCard = null, secondCard = null;
-        let lockBoard = false;
-
-        // Create cards
-        cards.forEach((img, index) => {
-            let card = document.createElement('div');
-            card.classList.add('card');
-            card.dataset.image = img;
-            card.addEventListener('click', flipCard);
-            gameBoard.appendChild(card);
-
-            console.log(`Card ${index + 1} created with image: ${img}`);
+        tiles.forEach((img, index) => {
+            let tile = document.createElement("div");
+            tile.classList.add("tile");
+            tile.dataset.image = img;
+            tile.addEventListener("click", () => flipTile(tile));
+            gameBoard.appendChild(tile);
         });
 
-        function flipCard() {
-            if (lockBoard || this.classList.contains('flipped') || this.classList.contains('matched')) return;
-
-            let imagePath = this.dataset.image;
-            if (!imagePath) {
-                console.error("Image path not found for card!", this);
-                return;
+        function flipTile(tile) {
+            if (openedTiles.length < 2 && !tile.classList.contains("hidden")) {
+                tile.style.backgroundImage = `url(${tile.dataset.image})`;
+                openedTiles.push(tile);
             }
 
-            this.style.backgroundImage = `url(${imagePath})`;
-            this.style.backgroundSize = "cover";
-            this.classList.add('flipped');
-
-            if (!firstCard) {
-                firstCard = this;
-            } else {
-                secondCard = this;
-                lockBoard = true;
-                setTimeout(checkMatch, 1000);
+            if (openedTiles.length === 2) {
+                setTimeout(checkMatch, 500);
             }
         }
 
         function checkMatch() {
-            if (firstCard.dataset.image === secondCard.dataset.image) {
-                firstCard.classList.add('matched');
-                secondCard.classList.add('matched');
+            if (openedTiles[0].dataset.image === openedTiles[1].dataset.image) {
+                openedTiles.forEach(t => t.classList.add("hidden"));
+                matchedPairs++;
+                if (matchedPairs === 8) {
+                    document.getElementById("winScreen").style.display = "block";
+                }
             } else {
-                setTimeout(() => {
-                    firstCard.style.backgroundImage = "url('heart.png')";
-                    secondCard.style.backgroundImage = "url('heart.png')";
-                    firstCard.classList.remove('flipped');
-                    secondCard.classList.remove('flipped');
-                }, 500);
+                openedTiles.forEach(t => t.style.backgroundImage = "");
             }
-            firstCard = secondCard = null;
-            lockBoard = false;
-            checkWin();
-        }
-
-        function checkWin() {
-            if (document.querySelectorAll('.matched').length === cards.length) {
-                document.getElementById('message').innerText = "You did it! Happy Birthday, my love! ❤️";
-            }
+            openedTiles = [];
         }
     </script>
 </body>
