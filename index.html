@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini Bday Games For Baby Ling <3 <3 <3</title>
+    <title>Mini Bdaya Games For Baby Ling <3 <3 <3</title>
     <style>
         body {
             text-align: center;
@@ -50,7 +50,10 @@
     <div class="win-screen" id="winScreen"></div>
     <audio id="flipSound" src="swipe.wav"></audio>
     <audio id="winSound" src="win.wav"></audio>
-    <!-- Canvas for Confetti Effect -->
+<!-- Full image shown when winning -->
+<div class="win-screen" id="winScreen"></div>
+
+<!-- Confetti canvas (on top of win screen) -->
 <canvas id="confettiCanvas"></canvas>
 
     <script>
@@ -136,6 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const ctx = canvas.getContext("2d");
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+        canvas.style.display = "block";  // Ensure confetti canvas is visible
 
         let particles = [];
         let colors = ["#ff0", "#ff4500", "#00ff00", "#ff1493", "#1e90ff", "#ffa500"];
@@ -170,11 +174,63 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         animateConfetti();
-        setTimeout(() => { canvas.style.display = "none"; }, 5000); // Stop after 5 seconds
+
+        // Stop confetti after 5 seconds but keep the win screen
+        setTimeout(() => {
+            canvas.style.display = "none";
+        }, 5000);
     }
+</script>
 
-
-    
-    </script>
+<style>
+    body {
+        text-align: center;
+        font-family: Arial, sans-serif;
+    }
+    h1 {
+        margin-bottom: 20px;
+    }
+    .game-container {
+        display: grid;
+        grid-template-columns: repeat(4, 100px);
+        grid-gap: 10px;
+        justify-content: center;
+        margin: 0 auto;
+    }
+    .tile {
+        width: 100px;
+        height: 100px;
+        background: gray;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+        border-radius: 10px;
+    }
+    .hidden {
+        visibility: hidden;
+    }
+    .win-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('full-image.jpg') center/cover no-repeat;
+        display: none;
+        z-index: 1;  /* Behind the confetti */
+    }
+    #confettiCanvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 2;  /* Above the win screen */
+        display: none;
+    }
+</style>
 </body>
 </html>
